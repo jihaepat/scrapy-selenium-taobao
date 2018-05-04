@@ -20,7 +20,7 @@ class SeleniumMiddleware(object):
         self.chrome_options = Options()
         self.chrome_options.add_argument('--headless')
         self.chrome_options.add_argument('--disable--gpu')
-        self.driver = webdriver.Chrome(chrome_options=self.chrome_options)
+        self.driver = webdriver.Chrome('/home/leehyunsoo/4TB/chromedriver/chromedriver',chrome_options=self.chrome_options)
         self.driver.maximize_window()
         self.driver.implicitly_wait(10)
 
