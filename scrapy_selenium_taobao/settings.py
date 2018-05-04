@@ -14,7 +14,6 @@ BOT_NAME = 'scrapy_selenium_taobao'
 SPIDER_MODULES = ['scrapy_selenium_taobao.spiders']
 NEWSPIDER_MODULE = 'scrapy_selenium_taobao.spiders'
 
-KEYWORDS = ['tennis', 'snacks', 'ipad']
 MAX_PAGE = 100
 
 DOWNLOADER_MIDDLEWARES = {
