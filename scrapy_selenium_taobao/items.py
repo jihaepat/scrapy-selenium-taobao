@@ -11,6 +11,19 @@ from scrapy.loader.processors import MapCompose, Join
 import re
 
 
+class TestItem(Item):
+    collection = 'taobao-product-%s' % str(datetime.datetime.now())
+
+    keyword = Field()
+    title = Field()
+    price = Field()
+    deal = Field()
+    shop = Field()
+    location = Field()
+    image = Field()
+    page = Field()
+
+
 class ProductItem(Item):
     collection = 'taobao-product-%s' % str(datetime.datetime.now())
     keyword = Field(
@@ -36,6 +49,7 @@ class ProductItem(Item):
     image = Field(
         output_processor=Join(),
     )
+
     page = Field(
         output_processor=Join(),
     )
