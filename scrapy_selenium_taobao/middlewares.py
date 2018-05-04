@@ -22,12 +22,12 @@ class SeleniumMiddleware(object):
     def __init__(self):
         # self.logger = getLogger(__name__)
         self.chrome_options = webdriver.ChromeOptions()
-        self.chrome_options.add_argument(
-            '--user-agent=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.139 Safari/537.36')
+        # self.chrome_options.add_argument(
+        #     '--user-agent=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.139 Safari/537.36')
         # self.chrome_options.add_argument('headless')
         self.driver = webdriver.Chrome('/home/leehyunsoo/4TB/chromedriver/chromedriver',
                                        options=self.chrome_options)
-        self.driver.implicitly_wait(10)
+        self.driver.set_page_load_timeout(10)
 
     def __del__(self):
         self.driver.close()
@@ -38,7 +38,8 @@ class SeleniumMiddleware(object):
         try:
             self.driver.get(request.url)
             current_page_url = self.driver.current_url
-            self.get_data_url()
+            data_url = self.get_data_url()
+            self.move_data(data_url)
             self.driver.get(current_page_url)
             # self.driver.find_element_by_xpath('//a[@trace="srp_bottom_pagedown"]').click()
             sleep(2)
@@ -52,12 +53,14 @@ class SeleniumMiddleware(object):
     def get_data_url(self):
         data = self.driver.find_elements_by_xpath(
             '//*[@id="mainsrp-itemlist"]/div/div/div/div/div/div[2]/p/a')
-        #//*[@id="mainsrp-itemlist"]/div/div/div/div/div/div[2]/p/a
-        data_url = [href.text for href in data]
-        for url in data_url:
-            print(url)
 
-    def move_data(self, url):
+        data_url = [href.get_attribute('href') for href in data]
+
+        return data_url
+
+    def move_data(self, data_url):
+        for url in data_url:
+            self.driver.get(url)
         pass
 
 
