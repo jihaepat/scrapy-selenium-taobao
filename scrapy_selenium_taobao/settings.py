@@ -25,12 +25,12 @@ CLOSESPIDER_ITEMCOUNT = 15000
 ITEM_PIPELINES = {
     'scrapy_selenium_taobao.pipelines.NoTitleFilterPipeline': 300,
     'scrapy_selenium_taobao.pipelines.DuplicateFilterPipeline': 500,
-    'scrapy_selenium_taobao.pipelines.MongoDBPipeline': 800,
+    # 'scrapy_selenium_taobao.pipelines.MongoDBPipeline': 800,
 }
 FEED_EXPORT_ENCODING = 'utf-8'
 
 LOG_FILE = 'log'
-LOG_LEVEL = 'INFO'
+LOG_LEVEL = 'WARNING'
 
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
