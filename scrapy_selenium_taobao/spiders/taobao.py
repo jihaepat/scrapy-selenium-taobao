@@ -1,19 +1,22 @@
 # -*- coding: utf-8 -*-
+
 import scrapy
 from urllib.parse import quote
 from scrapy.loader import ItemLoader
-from scrapy_selenium_taobao.items import ProductItem
+from scrapy_selenium_taobao.items import TestItem
+
 
 class TaobaoSpider(scrapy.Spider):
     name = 'taobao'
     allowed_domains = ['taobao.com']
     base_url = 'https://s.taobao.com/search?q='
+    keyword = ['ipad', 'asics']
 
     def start_requests(self):
-        for keyword in self.settings.get('KEYWORDS'):
+        for word in self.keyword:
             page = 1
-            url = self.base_url + quote(keyword)
-            yield scrapy.Request(url, callback=self.parse, meta={'keyword': keyword, 'page': page}, dont_filter=True)
+            url = self.base_url + quote(word)
+            yield scrapy.Request(url, callback=self.parse, meta={'keyword': word, 'page': page}, dont_filter=True)
 
     def parse(self, response):
         # parse the current page
@@ -21,7 +24,7 @@ class TaobaoSpider(scrapy.Spider):
         page = response.meta['page']
         products = response.xpath('//div[@class="grid g-clearfix"]/div/div')
         for product in products:
-            loader = ItemLoader(item=ProductItem())
+            loader = TestItem()
             loader.add_value('keyword', keyword)
             loader.add_value('title', product.xpath('div[2]/div[2]/a/text()').extract())
             loader.add_value('price', product.xpath('.//*[contains(@class,"price")]/strong/text()').extract_first())
@@ -35,4 +38,5 @@ class TaobaoSpider(scrapy.Spider):
         # go to next page
         if page < self.settings.get('MAX_PAGE'):
             page += 1
-            yield scrapy.Request(url=response.url, callback=self.parse, meta={'keyword': response.meta['keyword'], 'page': page}, dont_filter=True)
+            yield scrapy.Request(url=response.url, callback=self.parse,
+                                 meta={'keyword': response.meta['keyword'], 'page': page}, dont_filter=True)
