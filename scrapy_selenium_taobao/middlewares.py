@@ -11,17 +11,22 @@ from selenium.webdriver.chrome.options import Options
 from selenium.common.exceptions import TimeoutException
 from logging import getLogger
 from scrapy.http import HtmlResponse
-import time
+
+from time import sleep
+import re
+
+regax = re.compile(r'[1|2][9|0]\d\d')
 
 
 class SeleniumMiddleware(object):
     def __init__(self):
-        self.logger = getLogger(__name__)
-        self.chrome_options = Options()
-        self.chrome_options.add_argument('--headless')
-        self.chrome_options.add_argument('--disable--gpu')
-        self.driver = webdriver.Chrome('/home/leehyunsoo/4TB/chromedriver/chromedriver',chrome_options=self.chrome_options)
-        self.driver.maximize_window()
+        # self.logger = getLogger(__name__)
+        self.chrome_options = webdriver.ChromeOptions()
+        self.chrome_options.add_argument(
+            '--user-agent=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.139 Safari/537.36')
+        # self.chrome_options.add_argument('headless')
+        self.driver = webdriver.Chrome('/home/leehyunsoo/4TB/chromedriver/chromedriver',
+                                       options=self.chrome_options)
         self.driver.implicitly_wait(10)
 
     def __del__(self):
@@ -29,18 +34,31 @@ class SeleniumMiddleware(object):
 
     def process_request(self, request, spider):
         # scrap the website using headlesschrome
-        self.logger.debug('Headlesschrome is starting')
+        # self.logger.debug('Headlesschrome is starting')
         try:
             self.driver.get(request.url)
             current_page_url = self.driver.current_url
-            self.driver.find_element_by_xpath('//a[@trace="srp_bottom_pagedown"]').click()
-            time.sleep(5)
+            self.get_data_url()
+            self.driver.get(current_page_url)
+            # self.driver.find_element_by_xpath('//a[@trace="srp_bottom_pagedown"]').click()
+            sleep(2)
             next_page_url = self.driver.current_url
             self.driver.get(current_page_url)
-            return HtmlResponse(url=next_page_url, status=200, body=self.driver.page_source, request=request, encoding='utf-8')
+            return HtmlResponse(url=next_page_url, status=200, body=self.driver.page_source, request=request,
+                                encoding='utf-8')
         except TimeoutException:
             return HtmlResponse(url=request.url, status=500, request=request)
 
+    def get_data_url(self):
+        data = self.driver.find_elements_by_xpath(
+            '//*[@id="mainsrp-itemlist"]/div/div/div/div/div/div[2]/p/a')
+        #//*[@id="mainsrp-itemlist"]/div/div/div/div/div/div[2]/p/a
+        data_url = [href.text for href in data]
+        for url in data_url:
+            print(url)
+
+    def move_data(self, url):
+        pass
 
 
 class ScrapySeleniumTaobaoSpiderMiddleware(object):
