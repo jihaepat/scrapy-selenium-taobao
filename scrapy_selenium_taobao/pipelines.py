@@ -6,7 +6,7 @@
 # See: https://doc.scrapy.org/en/latest/topics/item-pipeline.html
 
 from scrapy.exceptions import DropItem
-import pymongo
+# import pymongo
 
 
 class NoTitleFilterPipeline(object):
@@ -28,16 +28,16 @@ class DuplicateFilterPipeline(object):
             return item
 
 
-class MongoDBPipeline(object):
-    def __init__(self):
-        self.client = pymongo.MongoClient('localhost', 27017)
-        self.db = self.client['mydb']
-
-    def close_spider(self, spider):
-        self.client.close()
-
-    def process_item(self, item, spider):
-        self.db[item.collection].insert_one(dict(item))
-        return item
+# class MongoDBPipeline(object):
+#     def __init__(self):
+#         self.client = pymongo.MongoClient('localhost', 27017)
+#         self.db = self.client['mydb']
+#
+#     def close_spider(self, spider):
+#         self.client.close()
+#
+#     def process_item(self, item, spider):
+#         self.db[item.collection].insert_one(dict(item))
+#         return item
 
 
