@@ -22,8 +22,6 @@ class SeleniumMiddleware(object):
     def __init__(self):
         # self.logger = getLogger(__name__)
         self.chrome_options = webdriver.ChromeOptions()
-        # self.chrome_options.add_argument(
-        #     '--user-agent=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.139 Safari/537.36')
         # self.chrome_options.add_argument('headless')
         self.driver = webdriver.Chrome('/home/leehyunsoo/4TB/chromedriver/chromedriver',
                                        options=self.chrome_options)
@@ -41,7 +39,7 @@ class SeleniumMiddleware(object):
             data_url = self.get_data_url()
             self.move_data(data_url)
             self.driver.get(current_page_url)
-            # self.driver.find_element_by_xpath('//a[@trace="srp_bottom_pagedown"]').click()
+            self.driver.find_element_by_xpath('//a[@trace="srp_bottom_pagedown"]').click()
             sleep(2)
             next_page_url = self.driver.current_url
             self.driver.get(current_page_url)
@@ -51,6 +49,7 @@ class SeleniumMiddleware(object):
             return HtmlResponse(url=request.url, status=500, request=request)
 
     def get_data_url(self):
+        # sleep(1000)
         data = self.driver.find_elements_by_xpath(
             '//*[@id="mainsrp-itemlist"]/div/div/div/div/div/div[2]/p/a')
 

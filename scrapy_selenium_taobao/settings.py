@@ -14,7 +14,7 @@ BOT_NAME = 'scrapy_selenium_taobao'
 SPIDER_MODULES = ['scrapy_selenium_taobao.spiders']
 NEWSPIDER_MODULE = 'scrapy_selenium_taobao.spiders'
 
-MAX_PAGE = 100
+MAX_PAGE = 1
 
 DOWNLOADER_MIDDLEWARES = {
     'scrapy_selenium_taobao.middlewares.SeleniumMiddleware': 300,

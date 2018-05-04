@@ -1,0 +1,4 @@
+2018-05-04 18:58:09 [scrapy.core.scraper] WARNING: Dropped: Found item without title
+{'keyword': 'ipad', 'price': '2588.00', 'title': []}
+2018-05-04 18:58:09 [scrapy.core.scraper] WARNING: Dropped: Found item without title
+{'keyword': 'asics', 'price': '398.00', 'title': []}
