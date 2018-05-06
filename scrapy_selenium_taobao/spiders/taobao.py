@@ -1,44 +1,52 @@
 # -*- coding: utf-8 -*-
+import re
 
 import scrapy
 from urllib.parse import quote
-from scrapy.loader import ItemLoader
 from scrapy_selenium_taobao.items import TestItem
 
 
 class TaobaoSpider(scrapy.Spider):
     name = 'taobao'
-    # allowed_domains = ['taobao.com']
-    base_url = 'https://s.taobao.com/search?q='
     keyword = ['ipad', 'asics']
+
+    regax = re.compile(r'[1|2][9|0]\d\d')
 
     def start_requests(self):
         for word in self.keyword:
-            page = 1
-            url = self.base_url + word
-            yield scrapy.Request(url, callback=self.parse, meta={'keyword': word, 'page': page}, dont_filter=True)
+            for page_num in range(self.settings.get('MAX_PAGE')):
+                url = 'https://s.taobao.com/search?q={}&s={}'.format(word,
+                                                                     str(page_num * 44))
+
+                yield scrapy.Request(url, callback=self.get_data_url, meta={'keyword': word},
+                                     dont_filter=True)
+
+    def get_data_url(self, response):
+        data = response.xpath(
+            '//*[@class="J_ClickStat"]/@href').extract()
+
+        print(len(data))
+        for url in data:
+            yield scrapy.Request(url='https:' + url, callback=self.parse, meta={'keyword': response.meta['keyword'], },
+                                 dont_filter=True)
 
     def parse(self, response):
         # parse the current page
         keyword = response.meta['keyword']
-        page = response.meta['page']
-        products = response.xpath('//div[@class="grid g-clearfix"]/div/div')
-        for product in products:
-            loader = TestItem()
-            loader['keyword'] =  keyword
-            loader['title'] = product.xpath('div[2]/div[2]/a/text()').extract()
-            loader['price'] = product.xpath('.//*[contains(@class,"price")]/strong/text()').extract_first()
-            # loader.add_value('deal', product.xpath('.//*[@class="deal-cnt"]/text()').extract_first())
-            # loader.add_value('shop', product.xpath('.//*[@class="shop"]/a/span[2]/text()').extract_first())
-            # loader.add_value('location', product.xpath('.//*[@class="location"]/text()').extract_first())
-            # loader.add_value('image', product.xpath('.//img[contains(@class,"J_ItemPic")]/@data-src').extract_first())
-            # loader.add_value('page', str(page))
-            # print(loader)
-            yield loader
+
+        products = response.xpath('//body/text()').extract()
+        if self.regax.findall(products):
+            if ((self.regax.findall(products)).sort())[0] < '2019':
+                loader = TestItem()
+                loader['keyword'] = keyword
+                loader['title'] = response.title
+                loader['url'] = response.url
+                print(loader)
+                yield loader
 
         # self.logger.info('Page %s for %s was completed' % (page, keyword))
         # go to next page
-        if page < self.settings.get('MAX_PAGE'):
-            page += 1
-            yield scrapy.Request(url=response.url, callback=self.parse,
-                                 meta={'keyword': response.meta['keyword'], 'page': page}, dont_filter=True)
+        # if page < self.settings.get('MAX_PAGE'):
+        #     page += 1
+        #     yield scrapy.Request(url=response.url, callback=self.parse,
+        #                          meta={'keyword': response.meta['keyword'], 'page': page}, dont_filter=True)
