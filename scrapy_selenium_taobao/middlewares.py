@@ -13,9 +13,6 @@ from logging import getLogger
 from scrapy.http import HtmlResponse
 
 from time import sleep
-import re
-
-regax = re.compile(r'[1|2][9|0]\d\d')
 
 
 class SeleniumMiddleware(object):
@@ -23,51 +20,54 @@ class SeleniumMiddleware(object):
         # self.logger = getLogger(__name__)
         # self.chrome_options = webdriver.ChromeOptions()
         # self.chrome_options.add_argument('headless')
-        # self.driver = webdriver.Chrome('/home/leehyunsoo/4TB/chromedriver/chromedriver',
+        # self.driver = webdriver.Chrome('/home/leehyunsoo/work/scrapy-selenium-taobao/web_driver/chromedriver',
         #                                options=self.chrome_options)
         self.firefox_options = webdriver.FirefoxOptions()
-        self.firefox_options.add_argument('user-agent=Mozilla/5.0 (Windows NT 5.1; rv:7.0.1) Gecko/20100101 Firefox/7.0.1')
+        # self.firefox_options.add_argument(
+        #     'user-agent=Mozilla/5.0 (Windows NT 5.1; rv:7.0.1) Gecko/20100101 Firefox/7.0.1')
         # self.firefox_options.add_argument('-headless')
-        self.driver = webdriver.Firefox(executable_path='/home/leehyunsoo/work/scrapy-selenium-taobao/web_driver/geckodriver',
-                                        firefox_options= self.firefox_options)
+        self.driver = webdriver.Firefox(
+            executable_path='/home/leehyunsoo/work/scrapy-selenium-taobao/web_driver/geckodriver',
+            firefox_options=self.firefox_options)
         self.driver.set_page_load_timeout(10)
 
     def __del__(self):
         self.driver.close()
 
+
     def process_request(self, request, spider):
-        # scrap the website using headlesschrome
-        # self.logger.debug('Headlesschrome is starting')
         try:
             self.driver.get(request.url)
-            current_page_url = self.driver.current_url
-            data_url = self.get_data_url()
-            self.move_data(data_url)
-            self.driver.get(current_page_url)
-            self.driver.find_element_by_xpath('//a[@trace="srp_bottom_pagedown"]').click()
-            sleep(2)
-            next_page_url = self.driver.current_url
-            self.driver.get(current_page_url)
-            return HtmlResponse(url=next_page_url, status=200, body=self.driver.page_source, request=request,
+            return HtmlResponse(url=self.driver.current_url, status=200, body=self.driver.page_source, request=request,
                                 encoding='utf-8')
         except TimeoutException:
             return HtmlResponse(url=request.url, status=500, request=request)
 
-    def get_data_url(self):
-        # sleep(1000)
-        data = self.driver.find_elements_by_xpath(
-            '//*[@class="J_ClickStat"]')
+    # 아직 미적용 -> 자동 입력으로 인한 로그인 방지 기능으로 인해 로그인 불가 -> 해결방안이 필요함
+    def login(self):
+        try:
+            self.driver.get('https://www.taobao.com/')
+            sleep(1)
+            self.driver.find_element_by_xpath('/html/body/div[4]/div[2]/div[1]/div/div[2]/div[1]/a[1]').click()
 
-        data_url = [href.get_attribute('href') for href in data]
-        print(len(data_url))
-        # print(data_url)
-        return data_url
+            login_box = self.driver.find_element_by_xpath('//*[@id="TPL_username_1"]')
+            password_box = self.driver.find_element_by_xpath('//*[@id="TPL_password_1"]')
 
-    def move_data(self, data_url):
-        for url in data_url:
-            self.driver.get(url)
-            sleep(20)
-        pass
+            login_box.clear()
+            login_box.send_keys('lhs950204@naver.com')
+            sleep(3)
+
+            password_box.clear()
+            password_box.send_keys('dlgustn123')
+            sleep(3)
+
+            submit_btn = self.driver.find_element_by_xpath('//*[@id="J_SubmitStatic"]')
+            submit_btn.click()
+
+        except TimeoutException:
+            self.login()
+
+
 
 
 class ScrapySeleniumTaobaoSpiderMiddleware(object):
