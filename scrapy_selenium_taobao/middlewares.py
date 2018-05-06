@@ -21,10 +21,15 @@ regax = re.compile(r'[1|2][9|0]\d\d')
 class SeleniumMiddleware(object):
     def __init__(self):
         # self.logger = getLogger(__name__)
-        self.chrome_options = webdriver.ChromeOptions()
+        # self.chrome_options = webdriver.ChromeOptions()
         # self.chrome_options.add_argument('headless')
-        self.driver = webdriver.Chrome('/home/leehyunsoo/4TB/chromedriver/chromedriver',
-                                       options=self.chrome_options)
+        # self.driver = webdriver.Chrome('/home/leehyunsoo/4TB/chromedriver/chromedriver',
+        #                                options=self.chrome_options)
+        self.firefox_options = webdriver.FirefoxOptions()
+        self.firefox_options.add_argument('user-agent=Mozilla/5.0 (Windows NT 5.1; rv:7.0.1) Gecko/20100101 Firefox/7.0.1')
+        # self.firefox_options.add_argument('-headless')
+        self.driver = webdriver.Firefox(executable_path='/home/leehyunsoo/work/scrapy-selenium-taobao/web_driver/geckodriver',
+                                        firefox_options= self.firefox_options)
         self.driver.set_page_load_timeout(10)
 
     def __del__(self):
@@ -51,15 +56,17 @@ class SeleniumMiddleware(object):
     def get_data_url(self):
         # sleep(1000)
         data = self.driver.find_elements_by_xpath(
-            '//*[@id="mainsrp-itemlist"]/div/div/div/div/div/div[2]/p/a')
+            '//*[@class="J_ClickStat"]')
 
         data_url = [href.get_attribute('href') for href in data]
-
+        print(len(data_url))
+        # print(data_url)
         return data_url
 
     def move_data(self, data_url):
         for url in data_url:
             self.driver.get(url)
+            sleep(20)
         pass
 
 
