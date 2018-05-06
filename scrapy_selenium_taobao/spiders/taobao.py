@@ -10,15 +10,12 @@ class TaobaoSpider(scrapy.Spider):
     name = 'taobao'
     # allowed_domains = ['taobao.com']
     base_url = 'https://s.taobao.com/search?q='
-    # base_url = 'https://s.taobao.com/search?q=ipad&imgfile=&commend=all&ssid=s5-e&search_type=item&sourceId=tb.index&spm=a21bo.2017.201856-taobao-item.1&ie=utf8&initiative_id=tbindexz_20170306'
     keyword = ['ipad', 'asics']
 
     def start_requests(self):
         for word in self.keyword:
             page = 1
-            # end = '&imgfile=&commend=all&ssid=s5-e&search_type=item&sourceId=tb.index&spm=a21bo.2017.201856-taobao-item.1&ie=utf8&initiative_id=tbindexz_20170306&style=grid'
             url = self.base_url + word
-            # url = 'https://s.taobao.com/search?q=ipad&imgfile=&commend=all&ssid=s5-e&search_type=item&sourceId=tb.index&spm=a21bo.2017.201856-taobao-item.1&ie=utf8&initiative_id=tbindexz_20170306'
             yield scrapy.Request(url, callback=self.parse, meta={'keyword': word, 'page': page}, dont_filter=True)
 
     def parse(self, response):
