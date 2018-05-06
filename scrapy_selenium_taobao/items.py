@@ -16,12 +16,7 @@ class TestItem(Item):
 
     keyword = Field()
     title = Field()
-    price = Field()
-    deal = Field()
-    shop = Field()
-    location = Field()
-    image = Field()
-    page = Field()
+    url = Field()
 
 
 class ProductItem(Item):
