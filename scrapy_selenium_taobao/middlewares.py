@@ -27,28 +27,40 @@ class SeleniumMiddleware(object):
         #     'user-agent=Mozilla/5.0 (Windows NT 5.1; rv:7.0.1) Gecko/20100101 Firefox/7.0.1')
         # self.firefox_options.add_argument('-headless')
         self.driver = webdriver.Firefox(
-            executable_path='/home/leehyunsoo/work/scrapy-selenium-taobao/web_driver/geckodriver',
+            # executable_path='/home/leehyunsoo/work/scrapy-selenium-taobao/web_driver/geckodriver',
+            executable_path='/media/leehyunsoo/4TB2/geckodriver/geckodriver',
             firefox_options=self.firefox_options)
         self.driver.set_page_load_timeout(10)
+        # self.login()
 
     def __del__(self):
         self.driver.close()
 
-
     def process_request(self, request, spider):
         try:
             self.driver.get(request.url)
-            return HtmlResponse(url=self.driver.current_url, status=200, body=self.driver.page_source, request=request,
-                                encoding='utf-8')
+            sleep(1)
+            if 'depth' in request.meta.keys():
+                return HtmlResponse(url=self.driver.current_url, status=200,
+                                    body=self.driver.find_element_by_xpath('//body').text,
+                                    request=request,
+                                    encoding='utf-8')
+            else:
+                return HtmlResponse(url=self.driver.current_url, status=200,
+                                    body=self.driver.page_source, request=request,
+                                    encoding='utf-8')
+
         except TimeoutException:
             return HtmlResponse(url=request.url, status=500, request=request)
 
     # 아직 미적용 -> 자동 입력으로 인한 로그인 방지 기능으로 인해 로그인 불가 -> 해결방안이 필요함
+    # ==> 미리 홈페이지에 로그인을 한상태로 크롤링을 시작하면 로그인창이 발생하지 않는걸 확인함
+
     def login(self):
         try:
-            self.driver.get('https://www.taobao.com/')
+            self.driver.get('https://login.taobao.com/')
             sleep(1)
-            self.driver.find_element_by_xpath('/html/body/div[4]/div[2]/div[1]/div/div[2]/div[1]/a[1]').click()
+            # self.driver.find_element_by_xpath('/html/body/div[4]/div[2]/div[1]/div/div[2]/div[1]/a[1]').click()
 
             login_box = self.driver.find_element_by_xpath('//*[@id="TPL_username_1"]')
             password_box = self.driver.find_element_by_xpath('//*[@id="TPL_password_1"]')
@@ -59,15 +71,12 @@ class SeleniumMiddleware(object):
 
             password_box.clear()
             password_box.send_keys('dlgustn123')
-            sleep(3)
-
-            submit_btn = self.driver.find_element_by_xpath('//*[@id="J_SubmitStatic"]')
-            submit_btn.click()
-
+            sleep(10)
+            #
+            # submit_btn = self.driver.find_element_by_xpath('//*[@id="J_SubmitStatic"]')
+            # submit_btn.click()
         except TimeoutException:
             self.login()
-
-
 
 
 class ScrapySeleniumTaobaoSpiderMiddleware(object):

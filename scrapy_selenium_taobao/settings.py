@@ -14,18 +14,19 @@ BOT_NAME = 'scrapy_selenium_taobao'
 SPIDER_MODULES = ['scrapy_selenium_taobao.spiders']
 NEWSPIDER_MODULE = 'scrapy_selenium_taobao.spiders'
 
-MAX_PAGE = 2
+MAX_PAGE = 1
 
 DOWNLOADER_MIDDLEWARES = {
     'scrapy_selenium_taobao.middlewares.SeleniumMiddleware': 300,
 }
 CLOSESPIDER_ITEMCOUNT = 15000
 
-ITEM_PIPELINES = {
-    'scrapy_selenium_taobao.pipelines.NoTitleFilterPipeline': 300,
-    'scrapy_selenium_taobao.pipelines.DuplicateFilterPipeline': 500,
+# ITEM_PIPELINES = {
+    # 'scrapy_selenium_taobao.pipelines.NoTitleFilterPipeline': 300,
+    # 'scrapy_selenium_taobao.pipelines.DuplicateFilterPipeline': 500,
     # 'scrapy_selenium_taobao.pipelines.MongoDBPipeline': 800,
-}
+    # 'scrapy_selenium_taobao.pipelines.TutorialPipeline' : 300
+# }
 FEED_EXPORT_ENCODING = 'utf-8'
 
 LOG_FILE = 'log'
