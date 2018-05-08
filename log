@@ -1,0 +1,16 @@
+2018-05-08 15:51:56 [scrapy.core.scraper] ERROR: Error downloading <GET https:///https://click.simba.taobao.com/cc_im?p=asics&s=1664367178&k=557&e=3OYb3loh56CskpK94ygwZ4OYQIT9ACr8iDSe8wNBPRUSqUUd1FS1uzFq%2Bu7vNU%2FgrHoo3oWBeYEpcGcBuDyNzRclPGPo25mkCQ4oVfvA02Tt4OyVgtGn4klW52XxarJ680lVRiIlcuKihOplQ9M3RvE90mpTsBBPnsZprldpGFGJjNDQUIvuC798HhzftsqNUjBSGbziN09Jr9YshYXjLB8kbi1eZ6Ir3gpMQ13ViNJyao0%2BqpIKx3bh7CX3Ao8o8BIi4MU%2BZaoWktmp5PrPxtbyDjU0guLE8K0Onak2LhPtXGpI%2BmrJDIuxWhVtAIazNzowWjtddsmcMaX0z%2FD8xN2A7z%2FPrCut7oXibd5xTzaQ5ofgHLfb6r9JCSsoCud1mjPiofAK3eb51XQalXfyScSVn%2BXq0t%2FcYtqVaduSpY%2B2P9ZS8HIWl8UlefcNGJ6Mh7T97DA%2B5RdSp728cJTWbZiaqTPG6bgkIGEjPeG%2FPka70L3vP1EYabYXD0BCJMBX4vsKYyzWh0NT0f%2BHwyYCLpta9jQsGflQm0K%2BvP96ntk%3D>
+Traceback (most recent call last):
+  File "/home/leehyunsoo/.pyenv/versions/3.6.4/envs/study/lib/python3.6/site-packages/twisted/internet/defer.py", line 1386, in _inlineCallbacks
+    result = g.send(result)
+  File "/home/leehyunsoo/.pyenv/versions/3.6.4/envs/study/lib/python3.6/site-packages/scrapy/core/downloader/middleware.py", line 37, in process_request
+    response = yield method(request=request, spider=spider)
+  File "/home/leehyunsoo/work/scrapy-selenium-taobao/scrapy_selenium_taobao/middlewares.py", line 34, in process_request
+    self.driver.get(request.url)
+  File "/home/leehyunsoo/.pyenv/versions/3.6.4/envs/study/lib/python3.6/site-packages/selenium/webdriver/remote/webdriver.py", line 324, in get
+    self.execute(Command.GET, {'url': url})
+  File "/home/leehyunsoo/.pyenv/versions/3.6.4/envs/study/lib/python3.6/site-packages/selenium/webdriver/remote/webdriver.py", line 312, in execute
+    self.error_handler.check_response(response)
+  File "/home/leehyunsoo/.pyenv/versions/3.6.4/envs/study/lib/python3.6/site-packages/selenium/webdriver/remote/errorhandler.py", line 242, in check_response
+    raise exception_class(message, screen, stacktrace)
+selenium.common.exceptions.WebDriverException: Message: Reached error page: about:neterror?e=dnsNotFound&u=https%3A//https//click.simba.taobao.com/cc_im%3Fp%3Dasics%26s%3D1664367178%26k%3D557%26e%3D3OYb3loh56CskpK94ygwZ4OYQIT9ACr8iDSe8wNBPRUSqUUd1FS1uzFq%252Bu7vNU%252FgrHoo3oWBeYEpcGcBuDyNzRclPGPo25mkCQ4oVfvA02Tt4OyVgtGn4klW52XxarJ680lVRiIlcuKihOplQ9M3RvE90mpTsBBPnsZprldpGFGJjNDQUIvuC798HhzftsqNUjBSGbziN09Jr9YshYXjLB8kbi1eZ6Ir3gpMQ13ViNJyao0%252BqpIKx3bh7CX3Ao8o8BIi4MU%252BZaoWktmp5PrPxtbyDjU0guLE8K0Onak2LhPtXGpI%252BmrJDIuxWhVtAIazNzowWjtddsmcMaX0z%252FD8xN2A7z%252FPrCut7oXibd5xTzaQ5ofgHLfb6r9JCSsoCud1mjPiofAK3eb51XQalXfyScSVn%252BXq0t%252FcYtqVaduSpY%252B2P9ZS8HIWl8UlefcNGJ6Mh7T97DA%252B5RdSp728cJTWbZiaqTPG6bgkIGEjPeG%252FPka70L3vP1EYabYXD0BCJMBX4vsKYyzWh0NT0f%252BHwyYCLpta9jQsGflQm0K%252BvP96ntk%253D&c=UTF-8&f=regular&d=https%EC%97%90%20%EC%9E%88%EB%8A%94%20%EC%84%9C%EB%B2%84%EC%97%90%20%EC%A0%91%EC%86%8D%ED%95%A0%20%EC%88%98%20%EC%97%86%EC%8A%B5%EB%8B%88%EB%8B%A4.
+

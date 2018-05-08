@@ -10,7 +10,8 @@ regax = re.compile(r'[1|2][9|0]\d\d[-|.|/|\w]\d\d[-|.|/|\w]\d\d')
 
 class TaobaoSpider(scrapy.Spider):
     name = 'taobao'
-    keyword = ['ipad']
+    keyword = ['ipad','asics','xivo']
+    end_date = '2019'
 
     def start_requests(self):
         for word in self.keyword:
@@ -29,35 +30,12 @@ class TaobaoSpider(scrapy.Spider):
                                  dont_filter=True)
 
     def parse(self, response):
-        print('parse============================================================================\n')
+        print(response.url)
         body = ''.join((response.body).decode('utf-8'))
-        # print(body)
-        print(regax.findall(body))
-        print(len(regax.findall(body)))
+
         if len(regax.findall(body)) > 0:
-            if ((regax.findall(body)).sort())[0] < '2019':
+            if (''.join(filter(str.isdigit, min(regax.findall(body))))) < self.end_date:
                 items = TestItem()
                 items['keyword'] = response.meta['keyword']
                 items['url'] = response.url
                 yield items
-        print('parse============================================================================\n')
-
-        # file.write(''.join(text_parts))
-        # if self.regax.findall(products):
-        #     if ((self.regax.findall(products)).sort())[0] < '2019':
-        #         loader = TestItem()
-        #         loader['keyword'] = keyword
-        #         loader['title'] = response.title
-        #         loader['url'] = response.url
-        #         print(loader)
-        #         yield loader
-
-        # items = TestItem()
-        # keyword = response.meta['keyword']
-        # title = response.xpath('/html/body/div[5]/div/div[2]/div/div[1]/div[1]/div/div[1]/h1/a/text()').extract()
-        # url = response.url
-        #
-        # items['title'] = title
-        # items['keyword'] = keyword
-        # items['url'] = url
-        # yield items

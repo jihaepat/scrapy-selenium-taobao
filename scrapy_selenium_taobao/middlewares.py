@@ -7,9 +7,7 @@
 
 from scrapy import signals
 from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
 from selenium.common.exceptions import TimeoutException
-from logging import getLogger
 from scrapy.http import HtmlResponse
 
 from time import sleep
@@ -17,15 +15,10 @@ from time import sleep
 
 class SeleniumMiddleware(object):
     def __init__(self):
-        # self.logger = getLogger(__name__)
-        # self.chrome_options = webdriver.ChromeOptions()
-        # self.chrome_options.add_argument('headless')
-        # self.driver = webdriver.Chrome('/home/leehyunsoo/work/scrapy-selenium-taobao/web_driver/chromedriver',
-        #                                options=self.chrome_options)
         self.firefox_options = webdriver.FirefoxOptions()
         # self.firefox_options.add_argument(
         #     'user-agent=Mozilla/5.0 (Windows NT 5.1; rv:7.0.1) Gecko/20100101 Firefox/7.0.1')
-        # self.firefox_options.add_argument('-headless')
+        self.firefox_options.add_argument('-headless')
         self.driver = webdriver.Firefox(
             # executable_path='/home/leehyunsoo/work/scrapy-selenium-taobao/web_driver/geckodriver',
             executable_path='/media/leehyunsoo/4TB2/geckodriver/geckodriver',
